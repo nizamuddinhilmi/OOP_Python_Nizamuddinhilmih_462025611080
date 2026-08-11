@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="section">
+  <div class="wrap">
+    <div class="page-hero">
+      <div class="eyebrow">Keranjang</div>
+      <h2>Pesanan kamu</h2>
+    </div>
+
+    {% if items|length == 0 %}
+      <p class="empty-note">Keranjang masih kosong. <a href="{{ url_for('index') }}">Kembali ke katalog →</a></p>
+    {% else %}
+      <table class="cart-table">
+        <thead>
+          <tr><th>Buku</th><th>Harga</th><th>Jumlah</th><th>Subtotal</th></tr>
+        </thead>
+        <tbody>
+          {% for item in items %}
+          <tr>
+            <td>{{ item.buku.get_judul() }}<br><span class="mono" style="font-size:11px;color:var(--ink-soft);">{{ item.buku.get_penulis() }}</span></td>
+            <td class="mono">{{ item.buku.get_harga() | rupiah }}</td>
+            <td>
+              <form method="post" action="{{ url_for('cart_update', id_buku=item.buku.get_id()) }}" class="qty-form">
+                <button class="qty-btn" name="delta" value="-1">–</button>
+                <span class="mono">{{ item.qty }}</span>
+                <button class="qty-btn" name="delta" value="1">+</button>
+              </form>
+            </td>
+            <td class="mono">{{ item.subtotal | rupiah }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <div class="cart-summary">
+        <span class="total-label">Total: {{ total | rupiah }}</span>
+        <form method="get" action="{{ url_for('checkout_page') }}">
+          <button class="btn-primary" type="submit">Checkout</button>
+        </form>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}

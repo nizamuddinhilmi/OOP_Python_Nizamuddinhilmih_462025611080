@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="section">
+  <div class="wrap">
+    <div class="checkout-box">
+      <div class="eyebrow">Pembayaran</div>
+      <h3 style="font-family:'Fraunces',serif;font-size:20px;">Pilih metode pembayaran</h3>
+      <p style="font-size:13px;color:var(--ink-soft);margin-top:6px;">
+        Total pesanan: <strong>{{ total | rupiah }}</strong>. Setiap metode adalah kelas turunan dari
+        <span class="mono">MetodePembayaran</span> yang meng-override <span class="mono">proses_pembayaran()</span>.
+      </p>
+
+      <form method="post" action="{{ url_for('checkout_page') }}" class="pay-form">
+        <label class="pay-option">
+          <input type="radio" name="metode" value="bank" checked style="margin-right:10px;"> Transfer Bank
+        </label>
+        <label class="pay-option">
+          <input type="radio" name="metode" value="ewallet" style="margin-right:10px;"> E-Wallet (QRIS)
+        </label>
+        <button class="btn-primary" type="submit" style="width:100%;margin-top:18px;">Proses pembayaran</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

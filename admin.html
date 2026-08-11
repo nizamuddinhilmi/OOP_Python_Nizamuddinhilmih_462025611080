@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="admin-page">
+  <div class="wrap">
+    <div class="eyebrow">Panel pengelola</div>
+    <h2>Manajemen inventaris &amp; buku</h2>
+    <p class="desc">Stok tidak bisa diubah langsung dari luar — setiap perubahan melewati method
+      <span class="mono">kurangi_stok()</span> / <span class="mono">set_stok()</span> milik kelas
+      <span class="mono">Buku</span> (lihat <span class="mono">models.py</span>).</p>
+
+    <table class="admin-table">
+      <thead>
+        <tr><th>Judul</th><th>Kategori</th><th>Harga</th><th>Stok</th></tr>
+      </thead>
+      <tbody>
+        {% for b in buku_list %}
+        <tr>
+          <td>{{ b.get_judul() }}<br><span class="mono" style="font-size:10.5px;color:#C9CBC3;">{{ b.get_kode_rak() }}</span></td>
+          <td>{{ b.get_kategori() }}</td>
+          <td class="mono">{{ b.get_harga() | rupiah }}</td>
+          <td>
+            <form method="post" action="{{ url_for('admin_stock', id_buku=b.get_id()) }}" class="stock-controls">
+              <button name="delta" value="-1">–</button>
+              <span class="mono">{{ b.get_stok() }}</span>
+              <button name="delta" value="1">+</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <form method="post" action="{{ url_for('admin_add') }}" class="add-book-form">
+      <input type="text" name="judul" placeholder="Judul buku" required>
+      <input type="text" name="penulis" placeholder="Penulis" required>
+      <select name="kategori">
+        <option>Fiksi</option><option>Non-Fiksi</option><option>Anak</option><option>Sains</option><option>Sejarah</option>
+      </select>
+      <input type="number" name="harga" placeholder="Harga (Rp)" required>
+      <input type="number" name="stok" placeholder="Stok awal" required>
+      <input type="text" name="kode_rak" placeholder="Kode rak (opsional)">
+      <button type="submit">+ Tambah buku ke katalog</button>
+    </form>
+  </div>
+</section>
+
+{% endblock %}

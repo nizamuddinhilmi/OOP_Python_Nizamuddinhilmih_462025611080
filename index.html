@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">Toko buku independen — daring</div>
+      <h1>Cari buku, cek <em>stok asli</em>,<br>pesan tanpa ke toko.</h1>
+      <p>Rak Baca menghubungkan pembaca dengan toko buku independen. Jelajahi katalog, lihat ketersediaan stok secara langsung, dan selesaikan pemesanan dalam hitungan menit.</p>
+      <div class="hero-actions">
+        <a href="#katalog" class="btn-primary" style="text-decoration:none;display:inline-block;">Lihat Katalog</a>
+      </div>
+    </div>
+    <div class="card-stack">
+      <div class="stack-card sc3"><div class="num">823.9 / TER</div><div class="ttl">Kartu Katalog</div><div class="ln"></div></div>
+      <div class="stack-card sc2"><div class="num">598.1 / HAR</div><div class="ttl">Stok Waktu-Nyata</div><div class="ln"></div></div>
+      <div class="stack-card sc1"><div class="num">301.4 / SIS</div><div class="ttl">Pesan Daring</div><div class="ln"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="katalog">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Katalog</div>
+        <h2>Telusuri koleksi buku</h2>
+      </div>
+    </div>
+
+    <form method="get" action="{{ url_for('index') }}" class="search-row">
+      <input type="hidden" name="kategori" value="{{ kategori_aktif }}">
+      <input type="text" name="q" value="{{ q }}" placeholder="Cari judul atau penulis…">
+    </form>
+
+    <div class="tabs">
+      {% for k in kategori_list %}
+        <a href="{{ url_for('index', kategori=k, q=q) }}"
+           class="tab {% if k == kategori_aktif %}active{% endif %}"
+           style="text-decoration:none;">{{ k }}</a>
+      {% endfor %}
+    </div>
+
+    <div class="grid">
+      {% if buku_list|length == 0 %}
+        <p class="empty-note">Tidak ada buku yang cocok. Coba kata kunci lain.</p>
+      {% endif %}
+      {% for b in buku_list %}
+        <div class="card">
+          <div class="call-no">{{ b.get_kode_rak() }}</div>
+          <div class="kategori">{{ b.get_kategori() }}</div>
+          <h3>{{ b.get_judul() }}</h3>
+          <div class="penulis">{{ b.get_penulis() }}</div>
+          <div class="dashed"></div>
+          <div class="bottom-row">
+            <span class="price">{{ b.get_harga() | rupiah }}</span>
+            {% if b.get_stok() == 0 %}
+              <span class="stamp-badge stamp-out">STOK HABIS</span>
+            {% else %}
+              <span class="stamp-badge stamp-ok">TERSEDIA · {{ b.get_stok() }}</span>
+            {% endif %}
+          </div>
+          <form method="post" action="{{ url_for('cart_add', id_buku=b.get_id()) }}">
+            <button class="add-btn" {% if b.get_stok() == 0 %}disabled{% endif %}>
+              {% if b.get_stok() == 0 %}Tidak tersedia{% else %}+ Tambah ke keranjang{% endif %}
+            </button>
+          </form>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--paper-alt);">
+  <div class="wrap">
+    <div class="eyebrow">Alur</div>
+    <h2 style="margin-bottom:24px;">Tiga langkah, selesai</h2>
+    <div class="steps">
+      <div class="step"><div class="n">01</div><h3>Cari &amp; pilih</h3><p>Telusuri katalog berdasarkan kategori atau kata kunci, lihat stok yang tersedia secara langsung.</p></div>
+      <div class="step"><div class="n">02</div><h3>Bayar</h3><p>Pilih transfer bank atau e-wallet — masing-masing diproses dengan caranya sendiri.</p></div>
+      <div class="step"><div class="n">03</div><h3>Terima kabar</h3><p>Konfirmasi pemesanan dikirim lewat email atau WhatsApp, sesuai pilihanmu.</p></div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

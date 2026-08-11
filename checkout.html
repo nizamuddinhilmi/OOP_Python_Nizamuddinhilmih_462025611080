@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="section">
+  <div class="wrap">
+    <div class="checkout-box">
+      <div class="eyebrow">Pesanan Diterima</div>
+      <h3 style="font-family:'Fraunces',serif;font-size:20px;">Terima kasih!</h3>
+
+      <div class="result-box">{{ pay_result }}</div>
+
+      {% if not notif_result %}
+        <p style="font-size:13px;color:var(--ink-soft);margin-top:16px;">
+          Kirim konfirmasi lewat (kelas <span class="mono">Notifikasi</span> — abstraksi):
+        </p>
+        <div class="notif-row">
+          <form method="post" action="{{ url_for('checkout_notify') }}" style="flex:1;">
+            <input type="hidden" name="jenis" value="email">
+            <button type="submit" style="width:100%;">Email</button>
+          </form>
+          <form method="post" action="{{ url_for('checkout_notify') }}" style="flex:1;">
+            <input type="hidden" name="jenis" value="wa">
+            <button type="submit" style="width:100%;">WhatsApp</button>
+          </form>
+        </div>
+      {% else %}
+        <div class="result-box">{{ notif_result }}</div>
+      {% endif %}
+
+      <a href="{{ url_for('index') }}" class="modal-close-btn" style="display:block;text-align:center;text-decoration:none;box-sizing:border-box;">Kembali ke Katalog</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
